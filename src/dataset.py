@@ -8,15 +8,20 @@ from PIL import ImageFile
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 
-class Classification:
+class ClassificationDataset:
     def __init__(self, image_paths, targets, resize=None):
         self.image_paths = image_paths
         self.targets = targets
         self.resize = resize
+
+        mean = (0.485, 0.456, 0.406)
+        std = (0.229, 0.224, 0.225)
         # Maybe add more augmentations
         self.augmentation_pipeline = albumentations.Compose(
             [
-                albumentations.Normalize(always_apply=True)
+                albumentations.Normalize(
+                    mean, std, max_pixel_value=255.0, always_apply=True
+                )
             ]
         )
 
@@ -30,12 +35,14 @@ class Classification:
 
         if self.resize is not None:
             # write as HxW
-            image = image.resize((self.resize[1], self.resize[0]), resample=Image.BILINEAR)
+            image = image.resize(
+                (self.resize[1], self.resize[0]), resample=Image.BILINEAR
+            )
 
         # convert to numpy array
         image = np.array(image)
         augmented = self.augmentation_pipeline(image=image)
-        image = augmented('image')
+        image = augmented['image']
 
         # Convert to form: CxHxW
         image = np.transpose(image, (2,0,1)).astype(np.float32)
