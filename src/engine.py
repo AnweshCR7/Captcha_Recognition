@@ -1,9 +1,10 @@
 from tqdm import tqdm
 import torch
 import config
+import model_utils
 
 
-def train_fn(model, data_loader, optimizer):
+def train_fn(model, data_loader, optimizer, save_model=False):
     model.train()
     fin_loss = 0
     tk = tqdm(data_loader, total=len(data_loader))
@@ -15,6 +16,9 @@ def train_fn(model, data_loader, optimizer):
         loss.backward()
         optimizer.step()
         fin_loss += loss.item()
+
+    if save_model:
+        model_utils.save_model(model, optimizer, loss, config.CHECKPOINT_PATH)
 
     return fin_loss/len(data_loader)
 

@@ -2,13 +2,14 @@ import os
 import glob
 import torch
 import numpy as np
-import pprint
+from pprint import pprint
 from sklearn import preprocessing
 from sklearn import model_selection
 from sklearn import metrics
 import engine
 import config
 import dataset
+from model_utils import plot_loss
 from model import CaptchaModel
 
 
@@ -49,6 +50,8 @@ def decode_predictions(preds, encoder):
 
 def run_training():
     image_files = glob.glob(os.path.join(config.DATA_DIR, "*.png"))
+    image_files = image_files[:10]
+    print(f"Number of Images Found: {len(image_files)}")
     # "../xywz.png" -> "xywz"
     targets_orig = [x.split("/")[-1].split(".")[0] for x in image_files]
     # separate the targets on character level
@@ -61,7 +64,7 @@ def run_training():
     # label encodes from 0, so add 1 to start from 1: 0 will be saved for unknown
     targets_enc = np.array(targets_enc) + 1
 
-    print(len(lbl_encoder.classes_))
+    print(f"Number of Unique Classes: {len(lbl_encoder.classes_)}")
 
     train_imgs, test_imgs, train_targets, test_targets, train_orig_targets, test_orig_targets = \
         model_selection.train_test_split(image_files, targets_enc, targets_orig, test_size=0.1, random_state=42)
@@ -92,8 +95,10 @@ def run_training():
         optimizer, factor=0.8, patience=5, verbose=True
     )
 
+    train_loss_data = []
+    test_loss_data = []
     for epoch in range(config.EPOCHS):
-        train_loss = engine.train_fn(model, train_loader, optimizer)
+        train_loss = engine.train_fn(model, train_loader, optimizer, save_model=True)
         eval_preds, test_loss = engine.eval_fn(model, test_loader)
 
         eval_captcha_preds = []
@@ -110,8 +115,11 @@ def run_training():
             f"Epoch={epoch}, Train Loss={train_loss}, Test Loss={test_loss} Accuracy={accuracy}"
         )
         scheduler.step(test_loss)
+        train_loss_data.append(train_loss_data)
+        test_loss_data.append(test_loss)
 
     # print(train_dataset[0])
+    plot_loss(train_loss_data, test_loss_data)
     print("done")
 
 
