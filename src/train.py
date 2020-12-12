@@ -115,7 +115,7 @@ def run_training():
             f"Epoch={epoch}, Train Loss={train_loss}, Test Loss={test_loss} Accuracy={accuracy}"
         )
         scheduler.step(test_loss)
-        train_loss_data.append(train_loss_data)
+        train_loss_data.append(train_loss)
         test_loss_data.append(test_loss)
 
     # print(train_dataset[0])

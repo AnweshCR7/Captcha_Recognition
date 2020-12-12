@@ -5,7 +5,10 @@ import matplotlib.pyplot as plt
 
 
 def plot_loss(train_loss_data, test_loss_data):
-    x_ax = np.arange(len(train_loss_data))
+    if not os.path.exists(config.PLOT_PATH):
+        os.makedirs(config.PLOT_PATH)
+
+    x_ax = np.arange(1, len(train_loss_data)+1)
     fig = plt.figure()
     plt.plot(x_ax, train_loss_data, label="train_loss")
     plt.plot(x_ax, test_loss_data, label="test_loss")
@@ -14,7 +17,7 @@ def plot_loss(train_loss_data, test_loss_data):
     plt.xlabel('Num Epoch')
     plt.legend(loc='best')
     plt.show()
-    fig.savefig('temp.png', dpi=fig.dpi)
+    fig.savefig(config.PLOT_PATH+'/train-test_loss.png', dpi=fig.dpi)
 
 
 def save_model(model, optimizer, loss, checkpoint_path):
