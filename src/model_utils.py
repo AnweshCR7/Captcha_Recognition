@@ -17,7 +17,7 @@ def plot_loss(train_loss_data, test_loss_data, plot_path):
     plt.xlabel('Num Epoch')
     plt.legend(loc='best')
     plt.show()
-    fig.savefig(config.PLOT_PATH+'/train-test_loss.png', dpi=fig.dpi)
+    fig.savefig(plot_path+'/train-test_loss.png', dpi=fig.dpi)
 
 
 def save_model(model, optimizer, loss, checkpoint_path):
