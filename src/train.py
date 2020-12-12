@@ -2,7 +2,7 @@ import os
 import glob
 import torch
 import numpy as np
-
+import pprint
 from sklearn import preprocessing
 from sklearn import model_selection
 from sklearn import metrics
@@ -101,9 +101,9 @@ def run_training():
             current_preds = decode_predictions(vp, lbl_encoder)
             eval_captcha_preds.extend(current_preds)
 
-        combined = list(zip(test_targets, eval_captcha_preds))
+        combined = list(zip(test_orig_targets, eval_captcha_preds))
 
-        print(combined[:10])
+        pprint(combined[:10])
         test_dup_rem = [remove_duplicates(c) for c in test_orig_targets]
         accuracy = metrics.accuracy_score(test_dup_rem, eval_captcha_preds)
         print(
