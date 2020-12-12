@@ -119,7 +119,7 @@ def run_training():
         test_loss_data.append(test_loss)
 
     # print(train_dataset[0])
-    plot_loss(train_loss_data, test_loss_data)
+    plot_loss(train_loss_data, test_loss_data, plot_path=config.PLOT_PATH)
     print("done")
 
 

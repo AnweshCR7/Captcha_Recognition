@@ -4,9 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_loss(train_loss_data, test_loss_data):
-    if not os.path.exists(config.PLOT_PATH):
-        os.makedirs(config.PLOT_PATH)
+def plot_loss(train_loss_data, test_loss_data, plot_path):
+    if not os.path.exists(plot_path):
+        os.makedirs(plot_path)
 
     x_ax = np.arange(1, len(train_loss_data)+1)
     fig = plt.figure()
